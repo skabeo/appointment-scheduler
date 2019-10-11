@@ -1,0 +1,9 @@
+<div class="row bg-light">
+  <div class="col text-center">
+    <%= link_to 'Home', root_path, class: 'text-secondary' %>
+    <% if session[:student_id] %>
+      <span class="text-secondary">|</span>
+      <%= link_to 'Logout', student_logout_path, class: 'text-secondary' %>
+    <% end %>
+  </div>
+</div>

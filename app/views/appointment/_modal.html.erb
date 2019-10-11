@@ -1,0 +1,30 @@
+<div class="modal fade" id="confirmAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="confirmAppointmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmAppointmentModalLabel">Confirm</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= render partial: 'appointment/form' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= content_for(:javascript) do %>
+  <script>
+      $('#confirmAppointmentModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget);
+          var appointment = button.data('appointment')
+          var coachName = button.data('coach-name');
+          var slotId = button.data('slot-id');
+          var modal = $(this);
+          modal.find('.modal-body #appointment').val(appointment);
+          modal.find('.modal-body #coach-name').val(coachName);
+          modal.find('.modal-body #slot-id').val(slotId);
+      })
+  </script>
+<% end %>

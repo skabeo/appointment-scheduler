@@ -1,0 +1,14 @@
+<%= form_with url: appointment_create_path, local: true do |form| %>
+  <%= form.hidden_field :slot_id, id: 'slot-id' %>
+  <div class="form-group">
+    <label for="coach-name">Coach:</label>
+    <%= form.text_field :coach_name, id: 'coach-name', class: 'form-control', disabled: true %>
+  </div>
+  <div class="form-group">
+    <label for="slot-time">Appointment:</label>
+    <%= form.text_field :appointment, id: 'appointment', class: 'form-control', disabled: true %>
+  </div>
+  <div class="form-group">
+    <%= form.submit 'Book Appointment', class: "btn btn-md btn-primary btn-block" %>
+  </div>
+<% end %>

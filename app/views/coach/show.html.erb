@@ -1,0 +1,48 @@
+<p class="text-secondary text-center pb-0 mb-0">
+  <small>COACH</small>
+</p>
+<h1 class="h2 pt-0 mb-0 text-center"><%= @coach.name %></h1>
+<h2 class="h4 text-center text-secondary pt-3"><%= Slot.get_duration %> Minute Time Slots</h2>
+<div class="pt-3">
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+      <tr>
+        <% Availability::DAYS_OF_WEEK.each do |day| %>
+          <th scope="col"><%= day %></th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <% Availability::DAYS_OF_WEEK.each_with_index do |_day, index| %>
+          <td>
+
+            <% @slots.each do |slot| %>
+              <% if slot.availability.day_of_week == index %>
+                <div class="p-1">
+                  <% time = time_format(slot.localize(@coach, @student)) %>
+                  <% if slot.available %>
+                    <%= link_to time, nil, class: 'badge badge-pill badge-info',
+                                'data-toggle': 'modal', 'data-target': '#confirmAppointmentModal',
+                                'data-coach-name': @coach.name,
+                                'data-appointment': "#{appointment_confirmation(slot, time, Slot.get_duration)}",
+                                'data-slot-id': slot.id
+                    %>
+                  <% else %>
+                    <div class="badge badge-pill badge-secondary"><%= time %></div>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+
+          </td>
+        <% end %>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%= render partial: 'appointment/modal' %>

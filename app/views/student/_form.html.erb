@@ -1,0 +1,23 @@
+<%= form_for @student, url: student_create_path, class: 'text-left' do |form| %>
+  <% if @student.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h2><%= pluralize(@student.errors.count, "error") %> stopped this account from being created:</h2>
+      <ul>
+        <% @student.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="form-group">
+    <label for="inputName">Name:</label>
+    <%= form.text_field :name, class: 'form-control', id: 'inputName', placeholder: 'Joe Smith' %>
+  </div>
+
+  <div class="form-group">
+    <label for="time_zone">Select Your Time Zone:</label>
+    <%= form.select :time_zone, *[@time_zones], {}, {class: 'form-control'} %>
+  </div>
+  <button type="submit" class="btn btn-primary btn-block">Continue</button>
+<% end %>
