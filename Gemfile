@@ -15,6 +15,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'db-query-matchers'
   gem 'rspec-rails', '~> 3.8'
+  gem 'rspec_junit_formatter'
 end
 
 group :development do
