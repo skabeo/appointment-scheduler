@@ -3,32 +3,36 @@
 
 ### Overview
 
-This is a take-home, interview project from a company that was **timboxed to 4 hours**.
-I have since extended it a bit by updating with code clean up and adding clairity it. 
+This was a take-home interview project from a company and was **timboxed to 4 hours**.
+I have since extended it a bit. 
 
-* Ask:
+* **Ask:**
 
-        "Prototype a web application for scheduling an appointment"
+     _"Prototype a web application for scheduling an appointment"_
 
-* Input:
+* **Input:**
 
-        "Given a CSV dataset that contains the active coaches and their 
-         weekly schedule of their available hours, Output the following
-         User Stories:"
+   *  _"Given a [CSV dataset](./lib/tasks/coaches.csv) that contains the active coaches and their 
+     weekly schedule of their available hours, Output the following
+     User Stories:"_
          
-* Output:
+* **Output:**
         
-         1. As a User, I want to see which coaches I can schedule with.
-         2. As a User, I want to see what 30 minute timeslots are available to schedule with a particular coach.
-         3. As a User, I want to book an appointment with a coach at one of their available times.
-                   
-* Anit-Requirements:
+    * _As a User, I want to see which coaches I can schedule with._
+    
+    * _As a User, I want to see what 30 minute timeslots are available to schedule with a particular coach._
+    
+    * _As a User, I want to book an appointment with a coach at one of their available times._
+               
+* **Anit-Requirements:**
 
-         1. You can't do it all. We respect your time, and expect that you will have to make 
-            choices and tradeoffs for what is in scope for your deliverable.
-         2. Don't worry about authentication. Assume a non-authenticated experience to keep things simple.
-         3. Pick your stack. Choose any libraries that help you produce the highest quality work in the time available.
-        
+     * _You can't do it all. We respect your time, and expect that you will have to make 
+        choices and tradeoffs for what is in scope for your deliverable._
+     
+     * _Don't worry about authentication. Assume a non-authenticated experience to keep things simple._
+     
+     * _Pick your stack. Choose any libraries that help you produce the highest quality work in the time available._
+    
 ### Setup
 
 * `bundle install`
