@@ -10,49 +10,126 @@ RSpec.describe Slot, type: :model do
         coach = Coach.create!(name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)')
         availability_1 = coach.availabilities.create!(day_of_week: 1, start: '9:00AM', end: '12:00PM')
         slots = described_class.generate(availability_1.start, availability_1.end)
-        slots.map {|slot| described_class.create!(availability: availability_1, start: slot)}
+        slots.map { |slot| described_class.create!(availability: availability_1, start: slot) }
         expect(described_class.first.availability).to eq availability_1
         expect(described_class.last.availability).to eq availability_1
       end
     end
   end
 
-  describe '#localize' do
-
-    subject {described_class.new}
-
-    context 'successfully converts localities' do
-      it 'Central to Eastern Time' do
-        allow(subject).to receive(:start).and_return('9:30AM')
-        allow_any_instance_of(Coach).to receive(:parse_time_zone).and_return('Central Time (US & Canada)')
-        allow_any_instance_of(Student).to receive(:parse_time_zone).and_return('Eastern Time (US & Canada)')
-        time = subject.localize(Coach.new, Student.new)
-        expect(time.strftime("%l:%M").strip).to eq('10:30')
-      end
-
-      it 'Eastern to Central Time' do
-        allow(subject).to receive(:start).and_return('9:30AM')
-        allow_any_instance_of(Coach).to receive(:parse_time_zone).and_return('Eastern Time (US & Canada)')
-        allow_any_instance_of(Student).to receive(:parse_time_zone).and_return('Central Time (US & Canada)')
-        time = subject.localize(Coach.new, Student.new)
-        expect(time.strftime("%l:%M").strip).to eq('8:30')
-      end
-
-    end
-
-    context 'does not convert the same localities' do
-      it 'Pacific to Pacific Time' do
-        allow(subject).to receive(:start).and_return('9:30AM')
-        allow_any_instance_of(Coach).to receive(:parse_time_zone).and_return('Pacific Time (US & Canada)')
-        allow_any_instance_of(Student).to receive(:parse_time_zone).and_return('Pacific Time (US & Canada)')
-        time = subject.localize(Coach.new, Student.new)
-        expect(time.strftime("%l:%M").strip).to eq('9:30')
-      end
-    end
-  end
+  # describe '#to_coaches_time_zone' do
+  #
+  #   subject { described_class.new }
+  #
+  #   context 'successfully converts a students time to a coaches time based upon each users timezone' do
+  #
+  #     let(:start_time) { "9:30AM" }
+  #     let(:finish_time) { "5:00PM" }
+  #     let(:day_of_week) { Availability::DAYS_OF_WEEK.index("Monday") }
+  #     let(:student) { create :student }
+  #     let(:coach) { create :coach }
+  #
+  #     before :each do
+  #       slots = Slot.generate(start_time, finish_time)
+  #       availability = coach.availabilities.create!(day_of_week: day_of_week, start: start_time, end: finish_time)
+  #       slots.map { |slot_time| create :slot, availability: availability, start: slot_time }
+  #     end
+  #
+  #     it 'Eastern to Central Time' do
+  #       student.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("10:30")
+  #     end
+  #
+  #     it 'Central to Eastern Time' do
+  #       student.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("8:30")
+  #     end
+  #
+  #     it 'Central to Pacific Time' do
+  #       student.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("11:30")
+  #     end
+  #
+  #     it 'Pacific to Central Time' do
+  #       student.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #
+  #       slot = Slot.where(start: "11:30AM").first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("11:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("9:30")
+  #     end
+  #
+  #     it 'Pacific to Eastern Time' do
+  #       student.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #
+  #       slot = Slot.last
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("5:00PM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("2:00")
+  #     end
+  #
+  #     it 'Eastern to Pacific Time' do
+  #       student.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("12:30")
+  #     end
+  #
+  #     it 'Eastern to Eastern Time will be unchanged' do
+  #       student.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-05:00) Eastern Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("9:30")
+  #     end
+  #
+  #     it 'Pacific to Pacific Time will be unchanged' do
+  #       student.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-07:00) Pacific Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("9:30")
+  #     end
+  #
+  #     it 'Central to Central Time will be unchanged' do
+  #       student.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #       coach.update!(time_zone: "(GMT-06:00) Central Time (US & Canada)")
+  #
+  #       slot = Slot.first
+  #       local_time = student.to_coaches_time_zone(time: slot.start, coach: coach)
+  #       expect(slot.start).to eq("9:30AM")
+  #       expect(local_time.strftime("%l:%M").strip).to eq("9:30")
+  #     end
+  #
+  #   end
+  # end
 
   describe '.get_duration' do
-    it 'succeeds when DURATION_IN_MINUTES <= 60' do
+    it 'succeeds when DURATION_IN_MINUTES between 60 and 1' do
       stub_const('Slot::DURATION_IN_MINUTES', 60)
       expect(described_class.get_duration).to eq 60
       stub_const('Slot::DURATION_IN_MINUTES', 30)
@@ -63,6 +140,11 @@ RSpec.describe Slot, type: :model do
       stub_const('Slot::DURATION_IN_MINUTES', 61)
       expect(described_class.get_duration).to eq 60
       stub_const('Slot::DURATION_IN_MINUTES', 120)
+      expect(described_class.get_duration).to eq 60
+    end
+
+    it 'default to 60 when DURATION_IN_MINUTES < 1' do
+      stub_const('Slot::DURATION_IN_MINUTES', 0)
       expect(described_class.get_duration).to eq 60
     end
   end
@@ -76,19 +158,19 @@ RSpec.describe Slot, type: :model do
       @coach = Coach.create!(name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)')
       @availability_1 = @coach.availabilities.create!(day_of_week: 1, start: start, end: finish)
       slots = Slot.generate(start, finish)
-      slots.map {|slot| Slot.create!(availability: @availability_1, start: slot)}
+      slots.map { |slot| Slot.create!(availability: @availability_1, start: slot) }
 
       start = '1:00PM'
       finish = '4:00PM'
       @availability_2 = @coach.availabilities.create!(day_of_week: 1, start: start, end: finish)
       slots = Slot.generate(start, finish)
-      slots.map {|slot| Slot.create!(availability: @availability_2, start: slot)}
+      slots.map { |slot| Slot.create!(availability: @availability_2, start: slot) }
     end
 
     # TODO: More testing of this to assert/challenge N + 1 issue
     context 'successful' do
       it 'only 1 db request' do
-        expect {described_class.all_with_availabilities(@coach.availabilities.ids)}.to make_database_queries(count: 1)
+        expect { described_class.all_with_availabilities(@coach.availabilities.ids) }.to make_database_queries(count: 1)
       end
 
       it 'returns 2 Availabilities' do
@@ -179,26 +261,26 @@ RSpec.describe Slot, type: :model do
     it 'succeeds with properly formatted times' do
       start = '9:00AM'
       finish = '3:00PM'
-      expect {described_class.validate_times(start, finish)}.to_not raise_error
+      expect { described_class.validate_times(start, finish) }.to_not raise_error
       start = '10:00am'
       finish = '9:00pm'
-      expect {described_class.validate_times(start, finish)}.to_not raise_error
+      expect { described_class.validate_times(start, finish) }.to_not raise_error
     end
 
     it 'fails with badly formatted times' do
       start = '9:00A M'
       finish = '3:0 0PM'
-      expect {described_class.validate_times(start, finish)}.to raise_error(ArgumentError)
+      expect { described_class.validate_times(start, finish) }.to raise_error(ArgumentError)
       start = '10:0 0am'
       finish = '9 :00pm'
-      expect {described_class.validate_times(start, finish)}.to raise_error(ArgumentError)
+      expect { described_class.validate_times(start, finish) }.to raise_error(ArgumentError)
     end
   end
 
   describe '.total_iterations' do
 
-    let(:start) {Time.parse('9:00AM')}
-    let(:finish) {Time.parse('3:00PM')}
+    let(:start) { Time.parse('9:00AM') }
+    let(:finish) { Time.parse('3:00PM') }
 
     context 'succeeds' do
       it 'returns 6 for every 60 minutes' do
@@ -221,7 +303,7 @@ RSpec.describe Slot, type: :model do
     end
 
     context 'fails' do
-      describe "to return anything other than 6" do
+      describe "to return anything other than a count of 6" do
         context 'for DURATION_IN_MINUTES > 60' do
           it 'fails with 61 minutes' do
             stub_const('Slot::DURATION_IN_MINUTES', 61)
@@ -235,6 +317,20 @@ RSpec.describe Slot, type: :model do
             expect(described_class.total_iterations(start, finish)).to eq 6
           end
         end
+
+        context 'for DURATION_IN_MINUTES < 1' do
+          it 'fails with 0 minutes' do
+            stub_const('Slot::DURATION_IN_MINUTES', 0)
+            expect(described_class.get_duration).to eq 60
+            expect(described_class.total_iterations(start, finish)).to eq 6
+          end
+
+          it 'fails with -10 minutes' do
+            stub_const('Slot::DURATION_IN_MINUTES', -10)
+            expect(described_class.get_duration).to eq 60
+            expect(described_class.total_iterations(start, finish)).to eq 6
+          end
+        end
       end
     end
   end
@@ -242,7 +338,7 @@ RSpec.describe Slot, type: :model do
   describe '.generate' do
     context 'succeeds' do
 
-      let(:results) {%w(9:00AM 9:30AM 10:00AM 10:30AM 11:00AM 11:30AM 12:00PM 12:30PM 1:00PM 1:30PM 2:00PM 2:30PM)}
+      let(:results) { %w(9:00AM 9:30AM 10:00AM 10:30AM 11:00AM 11:30AM 12:00PM 12:30PM 1:00PM 1:30PM 2:00PM 2:30PM) }
 
       it 'with expected arguments' do
         expect(described_class.generate('9:00am', '3:00pm')).to eq results
@@ -267,36 +363,36 @@ RSpec.describe Slot, type: :model do
 
     context 'fails' do
       it 'without the first argument' do
-        expect {described_class.generate('', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate(nil, '3:00pm')}.to raise_error(NoMethodError)
+        expect { described_class.generate('', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate(nil, '3:00pm') }.to raise_error(NoMethodError)
       end
 
       it 'without the second argument' do
-        expect {described_class.generate('9:00am', '')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', nil)}.to raise_error(NoMethodError)
+        expect { described_class.generate('9:00am', '') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', nil) }.to raise_error(NoMethodError)
       end
 
       it 'without both arguments' do
-        expect {described_class.generate()}.to raise_error(ArgumentError)
-        expect {described_class.generate('', '')}.to raise_error(ArgumentError)
-        expect {described_class.generate(nil, nil)}.to raise_error(NoMethodError)
+        expect { described_class.generate() }.to raise_error(ArgumentError)
+        expect { described_class.generate('', '') }.to raise_error(ArgumentError)
+        expect { described_class.generate(nil, nil) }.to raise_error(NoMethodError)
       end
 
       it 'without a properly formatted time String' do
         # TODO: Think about a global Array of poorly formatted times to iterate through
-        expect {described_class.generate('900am', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '300pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00qw', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '300pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('999999:00am', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:11111100am', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '1111113:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '3:99999900pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '3:00')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', '3:00qw')}.to raise_error(ArgumentError)
-        expect {described_class.generate('asdfasdfasdf', '3:00pm')}.to raise_error(ArgumentError)
-        expect {described_class.generate('9:00am', 'asdfasdfasdf')}.to raise_error(ArgumentError)
+        expect { described_class.generate('900am', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '300pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00qw', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '300pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('999999:00am', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:11111100am', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '1111113:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '3:99999900pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '3:00') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', '3:00qw') }.to raise_error(ArgumentError)
+        expect { described_class.generate('asdfasdfasdf', '3:00pm') }.to raise_error(ArgumentError)
+        expect { described_class.generate('9:00am', 'asdfasdfasdf') }.to raise_error(ArgumentError)
       end
     end
   end

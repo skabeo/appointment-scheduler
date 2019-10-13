@@ -1,31 +1,8 @@
 class Slot < ApplicationRecord
   belongs_to :availability
-  
+
   using Refinements
   DURATION_IN_MINUTES = 30.freeze
-
-  # Localize a Coaches time slot, via the
-  # Coaches time zone to a Students time
-  # zone.
-  #
-  # Example:
-  #
-  #   Coaches time slot and time zone:
-  #   "9:30AM Central Time (US & Canada)"
-  #
-  #   Students time zone:
-  #   "Eastern Time (US & Canada)"
-  #
-  #   Local time for the Student via in_time_zone:
-  #   "10:30AM"
-  #
-  # More info:
-  #   https://apidock.com/rails/String/in_time_zone
-  #
-  def localize(coach, student)
-    localized = "#{self.start} #{coach.parse_time_zone}"
-    localized.in_time_zone(student.parse_time_zone)
-  end
 
   class << self
 
@@ -48,7 +25,6 @@ class Slot < ApplicationRecord
     #   at 10:30am for 30 minutes, our finish time is 11:00am.
     #
     def generate(start, finish)
-
       start.remove_all_spaces!
       finish.remove_all_spaces!
       validate_times(start, finish)
@@ -57,7 +33,6 @@ class Slot < ApplicationRecord
       finish = Time.parse(finish)
 
       total = total_iterations(start, finish)
-
       slots = []
       1.upto(total) do
         slots << start.to_formatted_string
@@ -93,9 +68,9 @@ class Slot < ApplicationRecord
     end
 
     def get_duration
-      (DURATION_IN_MINUTES > 60) ? 60 : DURATION_IN_MINUTES
+      (DURATION_IN_MINUTES > 60 || DURATION_IN_MINUTES < 1) ? 60 : DURATION_IN_MINUTES
     end
-    
+
     def validate_times(*times)
       times.each do |time|
         raise ArgumentError unless match(time)
