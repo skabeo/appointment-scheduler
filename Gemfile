@@ -13,13 +13,14 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'rubocop', '~> 0.62.0', require: false
   gem 'db-query-matchers'
   gem 'rspec-rails', '~> 3.8'
   gem 'rspec_junit_formatter'
+  gem 'factory_bot_rails'
 end
 
 group :development do
-  gem 'rubocop', '~> 0.62.0', require: false
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
