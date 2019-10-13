@@ -10,4 +10,5 @@ class User < ApplicationRecord
   def parse_time_zone
     self.time_zone.gsub(/\(GMT.*?\)\s/, '')
   end
+
 end
