@@ -1,6 +1,4 @@
 #
-# Importer
-#
 # Open a CSV file, loop it, and add the results
 # to the appropriate Database tables.
 #
@@ -39,21 +37,22 @@ class Importer
           day_of_week = Availability::DAYS_OF_WEEK.index(row[:day_of_week])
 
           # Housekeeping
-          start = row[:available_at].strip
-          finish = row[:available_until].strip
+          start_time = row[:available_at].strip
+          finish_time = row[:available_until].strip
 
           # Create all coach availabilities
-          coach.availabilities.create!(day_of_week: day_of_week, start: start, end: finish)
+          availability = coach.availabilities.create!(day_of_week: day_of_week, start: start_time, end: finish_time)
 
-          # Return an Array of times based upon arguments passed
-          slots = Slot.generate(start, finish)
+          # Times based upon time arguments passed
+          slots_array = Slot.new.generate_time_slots(start_time, finish_time)
 
-          # Create all slots based upon Array of times returned above
-          slots.map {|slot| Slot.create!(availability: coach.availabilities.last, start: slot)}
+          # Create all slots in DB
+          slots_array.map {|slot| Slot.create!(availability: availability, start: slot)}
 
           counter += 1
         end
       end
+
       counter
     end
   end

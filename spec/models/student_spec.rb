@@ -24,15 +24,15 @@ RSpec.describe Student, type: :model do
 
      context 'successfully converts a students time zone to a coaches time zone' do
 
-       let(:start_time) { "9:30AM" }
-       let(:finish_time) { "5:00PM" }
+       let(:start) { "9:30AM" }
+       let(:finish) { "5:00PM" }
        let(:day_of_week) { Availability::DAYS_OF_WEEK.index("Monday") }
        let(:student) { create :student }
        let(:coach) { create :coach }
 
        before :each do
-         slots = Slot.generate(start_time, finish_time)
-         availability = coach.availabilities.create!(day_of_week: day_of_week, start: start_time, end: finish_time)
+         slots = Slot.new.generate_time_slots(start_time: start, finish_time: finish)
+         availability = coach.availabilities.create!(day_of_week: day_of_week, start: start, end: finish)
          slots.map { |slot_time| create :slot, availability: availability, start: slot_time }
        end
 
