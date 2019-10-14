@@ -1,4 +1,7 @@
-#
+# frozen_string_literal: true
+
+require 'csv'
+
 # Open a CSV file, loop it, and add the results
 # to the appropriate Database tables.
 #
@@ -21,15 +24,14 @@
 #    there are only Available At times on the hour,
 #    never on the half hour or quarter hour. The Day
 #    of Week values are all Capitalized, etc...
-# 
-require 'csv'
+#
 class Importer
   class << self
     def from_csv(path)
       counter = 0
-      CSV.foreach(path, {headers: true, return_headers: false, header_converters: :symbol, converters: :all}) do |row|
+      CSV.foreach(path, headers: true, return_headers: false,
+                        header_converters: :symbol, converters: :all) do |row|
         ActiveRecord::Base.transaction do
-
           # No duplicate coaches shall be added!
           coach = Coach.create_with(time_zone: row[:timezone]).find_or_create_by!(name: row[:name])
 
@@ -41,13 +43,14 @@ class Importer
           finish_time = row[:available_until].strip
 
           # Create all coach availabilities
-          availability = coach.availabilities.create!(day_of_week: day_of_week, start: start_time, end: finish_time)
+          availability = coach.availabilities.create!(day_of_week: day_of_week,
+                                                      start: start_time, end: finish_time)
 
           # Times based upon time arguments passed
           slots_array = Slot.new.generate_time_slots(start_time, finish_time)
 
           # Create all slots in DB
-          slots_array.map {|slot| Slot.create!(availability: availability, start: slot)}
+          slots_array.map { |slot| Slot.create!(availability: availability, start: slot) }
 
           counter += 1
         end

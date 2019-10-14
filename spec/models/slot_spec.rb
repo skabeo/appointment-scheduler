@@ -1,12 +1,13 @@
+# frozen_string_literal: false
+
 require 'rails_helper'
 RSpec.describe Slot, type: :model do
-
   let(:subject) { described_class.new }
 
   describe 'Associations' do
     context 'belongs_to availability' do
       it 'succeeds' do
-        coach = create :coach, name: "Bob Smithe", time_zone: '(GMT-06:00) Central Time (US & Canada)'
+        coach = create :coach, name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)'
         availability = coach.availabilities.create!(day_of_week: 1, start: '9:00AM', end: '12:00PM')
         slots = subject.generate_time_slots(start_time: availability.start, finish_time: availability.end)
         slots.map { |slot| described_class.create!(availability: availability, start: slot) }
@@ -18,33 +19,33 @@ RSpec.describe Slot, type: :model do
   end
 
   describe '.all_with_availabilities' do
-
-    let(:start_1) { "9:00AM" }
-    let(:finish_1) { "12:00PM" }
-    let(:start_2) { "1:00PM" }
-    let(:finish_2) { "4:00PM" }
+    let(:start1) { '9:00AM' }
+    let(:finish1) { '12:00PM' }
+    let(:start2) { '1:00PM' }
+    let(:finish2) { '4:00PM' }
     let!(:coach) { create :coach, name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)' }
-    let!(:availability_1) { coach.availabilities.create!(day_of_week: 1, start: start_1, end: finish_1) }
-    let!(:availability_2) { coach.availabilities.create!(day_of_week: 1, start: start_2, end: finish_2) }
+    let!(:availability1) { coach.availabilities.create!(day_of_week: 1, start: start1, end: finish1) }
+    let!(:availability2) { coach.availabilities.create!(day_of_week: 1, start: start2, end: finish2) }
 
     before do
-      slots_1 = subject.generate_time_slots(start_time: start_1, finish_time: finish_1)
-      slots_1.map { |slot_1| Slot.create!(availability: availability_1, start: slot_1) }
+      slots1 = subject.generate_time_slots(start_time: start1, finish_time: finish1)
+      slots1.map { |slot1| Slot.create!(availability: availability1, start: slot1) }
 
-      slots_2 = subject.generate_time_slots(start_time: start_2, finish_time: finish_2)
-      slots_2.map { |slot_2| Slot.create!(availability: availability_2, start: slot_2) }
+      slots2 = subject.generate_time_slots(start_time: start2, finish_time: finish2)
+      slots2.map { |slot2| Slot.create!(availability: availability2, start: slot2) }
     end
 
     # TODO: More testing of this to assert/challenge N + 1 issue
     context 'successful' do
       it 'only 1 db request' do
-        expect { described_class.all_with_availabilities(coach.availabilities.ids) }.to make_database_queries(count: 1)
+        expect { described_class.all_with_availabilities(coach.availabilities.ids) }
+          .to make_database_queries(count: 1)
       end
 
       it 'returns 2 Availabilities' do
         slots = described_class.all_with_availabilities(coach.availabilities.ids)
-        expect(slots.first.availability.id).to eq availability_1.id
-        expect(slots.last.availability.id).to eq availability_2.id
+        expect(slots.first.availability.id).to eq availability1.id
+        expect(slots.last.availability.id).to eq availability2.id
       end
 
       it 'returns 12 Slots' do
@@ -67,11 +68,9 @@ RSpec.describe Slot, type: :model do
         expect(slots.last.start).to eq finish
       end
     end
-
   end
 
   describe '.regex_match_by_time_format' do
-
     it 'succeeds with different formatted times' do
       times = ['9:00PM', '10:00AM', '10:00am', '10:00Am', '10:00aM']
       times.each do |time|
@@ -154,7 +153,6 @@ RSpec.describe Slot, type: :model do
   end
 
   describe '.compile_and_return_time_slots' do
-
     let(:start) { Time.parse('9:00AM') }
     let(:finish) { Time.parse('1:00PM') }
 
@@ -162,20 +160,20 @@ RSpec.describe Slot, type: :model do
       it 'returns correct time slots for every 60 minutes' do
         stub_const('Slot::DURATION_IN_MINUTES', 60)
         expect(subject.send(:compile_and_return_time_slots, start, finish))
-            .to eq(["9:00AM", "10:00AM", "11:00AM", "12:00PM"])
+          .to eq(['9:00AM', '10:00AM', '11:00AM', '12:00PM'])
       end
 
       it 'returns correct time slots for every 30 minutes' do
         stub_const('Slot::DURATION_IN_MINUTES', 30)
         expect(subject.send(:compile_and_return_time_slots, start, finish))
-            .to eq(["9:00AM", "9:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM"])
+          .to eq(['9:00AM', '9:30AM', '10:00AM', '10:30AM', '11:00AM', '11:30AM', '12:00PM', '12:30PM'])
       end
 
       it 'returns correct time slots for every 15 minutes' do
         stub_const('Slot::DURATION_IN_MINUTES', 15)
         expect(subject.send(:compile_and_return_time_slots, start, finish))
-            .to eq(["9:00AM", "9:15AM", "9:30AM", "9:45AM", "10:00AM", "10:15AM", "10:30AM", "10:45AM",
-                    "11:00AM", "11:15AM", "11:30AM", "11:45AM", "12:00PM", "12:15PM", "12:30PM", "12:45PM"])
+          .to eq(['9:00AM', '9:15AM', '9:30AM', '9:45AM', '10:00AM', '10:15AM', '10:30AM', '10:45AM',
+                  '11:00AM', '11:15AM', '11:30AM', '11:45AM', '12:00PM', '12:15PM', '12:30PM', '12:45PM'])
       end
     end
 
@@ -190,7 +188,8 @@ RSpec.describe Slot, type: :model do
       describe 'raises error or returns [] for DURATION_IN_MINUTES < 1' do
         it 'with 0 minutes' do
           stub_const('Slot::DURATION_IN_MINUTES', 0)
-          expect { subject.send(:compile_and_return_time_slots, start, finish) }.to raise_error(ZeroDivisionError)
+          expect { subject.send(:compile_and_return_time_slots, start, finish) }
+            .to raise_error(ZeroDivisionError)
         end
 
         it 'with -10 minutes' do
@@ -203,29 +202,28 @@ RSpec.describe Slot, type: :model do
 
   describe '.generate_time_slots' do
     context 'succeeds' do
-
-      let(:results) { %w(9:00AM 9:30AM 10:00AM 10:30AM 11:00AM 11:30AM 12:00PM 12:30PM 1:00PM 1:30PM 2:00PM 2:30PM) }
+      let(:results) { %w[9:00AM 9:30AM 10:00AM 10:30AM 11:00AM 11:30AM 12:00PM 12:30PM 1:00PM 1:30PM] }
 
       it 'with expected arguments' do
-        expect(subject.generate_time_slots(start_time: '9:00am', finish_time: '3:00pm')).to eq results
+        expect(subject.generate_time_slots(start_time: '9:00am', finish_time: '2:00pm')).to eq results
       end
 
       it 'with arguments containing spaces' do
-        times = [['9:00 am', '3:00 pm'], ['9 :00 am', ' 3:00 pm'], ['9: 0 0 am', '3: 00 pm    ']]
+        times = [['9:00 am', '2:00 pm'], ['9 :00 am', ' 2:00 pm'], ['9: 0 0 am', '2: 00 pm    ']]
         times.each do |time|
           expect(subject.generate_time_slots(start_time: time.first, finish_time: time.last)).to eq results
         end
       end
 
       it 'with mixed capitalization' do
-        times = [['9:00Am', '3:00pM'], ['9:00AM', '3:00PM']]
+        times = [['9:00Am', '2:00pM'], ['9:00AM', '2:00PM']]
         times.each do |time|
           expect(subject.generate_time_slots(start_time: time.first, finish_time: time.last)).to eq results
         end
       end
 
       it 'with mixed capitalization and spacing' do
-        times = [['9:0 0Am', '3 :00pM'], ['9:00A M', '3:00P M']]
+        times = [['9:0 0Am', '2 :00pM'], ['9:00A M', '2:00P M']]
         times.each do |time|
           expect(subject.generate_time_slots(start_time: time.first, finish_time: time.last)).to eq results
         end
@@ -234,15 +232,15 @@ RSpec.describe Slot, type: :model do
 
     context 'fails' do
       it 'without a proper time arguments' do
-        times = [['900am', '3:00pm'], ['9:00am', '300pm'], ['9:00', '3:00pm'], ['9:00qw', '3:00pm'],
-                 ['9:00am', '300pm'], ['999999:00am', '3:00pm'], ['9:11111100am', '3:00pm'],
-                 ['9:00am', '1111113:00pm'], ['9:00am', '3:99999900pm'], ['9:00am', '3:00'],
-                 ['9:00am', '3:00qw'], ['asdfasdfasdf', '3:00pm'], ['9:00am', 'asdfasdfasdf'],
+        times = [['900am', '2:00pm'], ['9:00am', '200pm'], ['9:00', '2:00pm'], ['9:00qw', '2:00pm'],
+                 ['9:00am', '200pm'], ['999999:00am', '2:00pm'], ['9:11111100am', '2:00pm'],
+                 ['9:00am', '1111113:00pm'], ['9:00am', '2:99999900pm'], ['9:00am', '2:00'],
+                 ['9:00am', '2:00qw'], ['asdfasdfasdf', '2:00pm'], ['9:00am', 'asdfasdfasdf'],
                  ['', '8'], ['8:', ''], ['9:00am', '']]
 
         times.each do |time|
           expect { subject.generate_time_slots(start_time: time.first, finish_time: time.last) }
-              .to raise_error(ArgumentError)
+            .to raise_error(ArgumentError)
         end
       end
     end

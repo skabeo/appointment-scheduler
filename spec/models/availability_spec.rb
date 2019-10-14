@@ -1,7 +1,8 @@
+# frozen_string_literal: false
+
 require 'rails_helper'
 
 RSpec.describe Availability, type: :model do
-
   describe 'Associations' do
     it 'belongs_to user' do
       coach = create :coach, name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)'
@@ -13,14 +14,14 @@ RSpec.describe Availability, type: :model do
       coach = create :coach, name: 'Bob Smithe', time_zone: '(GMT-06:00) Central Time (US & Canada)'
       availability = coach.availabilities.create!(day_of_week: 1, start: '8:00am', end: '9:00pm')
       slots = Slot.new.generate_time_slots(start_time: '8:00am', finish_time: '9:00pm')
-      slots.map {|slot| Slot.create!(availability: availability, start: slot)}
+      slots.map { |slot| Slot.create!(availability: availability, start: slot) }
       expect(availability.slots.count).to be > 1
     end
   end
 
   describe 'Constants' do
     context 'DAYS_OF_WEEK' do
-      let(:days_of_week) {%W(Sunday Monday Tuesday Wednesday Thursday Friday Saturday)}
+      let(:days_of_week) { %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday] }
 
       describe 'Succeeds' do
         it 'is an Array' do
@@ -45,23 +46,23 @@ RSpec.describe Availability, type: :model do
         end
       end
 
-      describe "Fails" do
+      describe 'Fails' do
         it 'when mixed case' do
-          mixed_case = %W(SunDAY Monday Tuesday Wednesday Thursday Friday Saturday)
+          mixed_case = %w[SunDAY Monday Tuesday Wednesday Thursday Friday Saturday]
           expect(described_class::DAYS_OF_WEEK).to_not eq(mixed_case)
 
-          mixed_case = %W(SuNday MondaY TUESDAy WedNesday tHursday friDay satUrday)
+          mixed_case = %w[SuNday MondaY TUESDAy WedNesday tHursday friDay satUrday]
           expect(described_class::DAYS_OF_WEEK).to_not eq(mixed_case)
         end
 
         it 'when not capitalized' do
-          not_capitalized = %W(sunday Monday Tuesday Wednesday Thursday Friday Saturday)
+          not_capitalized = %w[sunday Monday Tuesday Wednesday Thursday Friday Saturday]
           expect(described_class::DAYS_OF_WEEK).to_not eq(not_capitalized)
 
-          not_capitalized = %W(Sunday Monday Tuesday wednesday Thursday Friday Saturday)
+          not_capitalized = %w[Sunday Monday Tuesday wednesday Thursday Friday Saturday]
           expect(described_class::DAYS_OF_WEEK).to_not eq(not_capitalized)
 
-          not_capitalized = %W(Sunday Monday Tuesday Wednesday Thursday Friday saturday)
+          not_capitalized = %w[Sunday Monday Tuesday Wednesday Thursday Friday saturday]
           expect(described_class::DAYS_OF_WEEK).to_not eq(not_capitalized)
         end
       end

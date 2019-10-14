@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-
   describe 'Associations' do
     context 'has_many availailbities' do
       it 'succeeds' do
@@ -14,7 +15,6 @@ RSpec.describe User, type: :model do
   end
 
   describe '.parse_time_zone' do
-
     subject { described_class.new }
 
     it 'successfully returns time zone without GMT' do

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module CoachHelper
   def time_format(date_time)
-    date_time.strftime("%l:%M %p").strip
+    date_time.strftime('%l:%M %p').strip
   end
 
   def appointment_confirmation(slot, time, duration)
