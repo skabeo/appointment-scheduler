@@ -2,7 +2,7 @@
   <small>COACH</small>
 </p>
 <h1 class="h2 pt-0 mb-0 text-center"><%= @coach.name %></h1>
-<h2 class="h4 text-center text-secondary pt-3"><%= Slot.get_duration %> Minute Time Slots</h2>
+<h2 class="h4 text-center text-secondary pt-3"><%= Slot::DURATION_IN_MINUTES %> Minute Time Slots</h2>
 <div class="pt-3">
 
   <div class="table-responsive">
@@ -27,7 +27,7 @@
                     <%= link_to time, nil, class: 'badge badge-pill badge-info',
                                 'data-toggle': 'modal', 'data-target': '#confirmAppointmentModal',
                                 'data-coach-name': @coach.name,
-                                'data-appointment': "#{appointment_confirmation(slot, time, Slot.get_duration)}",
+                                'data-appointment': "#{appointment_confirmation(slot, time, Slot::DURATION_IN_MINUTES)}",
                                 'data-slot-id': slot.id
                     %>
                   <% else %>
