@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 
 require 'rails_helper'
 RSpec.describe Slot, type: :model do
@@ -44,8 +44,8 @@ RSpec.describe Slot, type: :model do
 
       it 'returns 2 Availabilities' do
         slots = described_class.all_with_availabilities(coach.availabilities.ids)
-        expect(slots.first.availability.id).to eq availability_1.id
-        expect(slots.last.availability.id).to eq availability_2.id
+        expect(slots.first.availability.id).to eq availability1.id
+        expect(slots.last.availability.id).to eq availability2.id
       end
 
       it 'returns 12 Slots' do

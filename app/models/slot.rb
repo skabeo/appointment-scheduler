@@ -9,8 +9,8 @@ class Slot < ApplicationRecord
   DURATION_IN_MINUTES = 30
 
   def generate_time_slots(start_time:, finish_time:)
-    start_time.remove_all_spaces!
-    finish_time.remove_all_spaces!
+    start_time.remove_all_spaces! # TODO: move this to the importer
+    finish_time.remove_all_spaces! # TODO: move this to the importer
     validate_duration_in_minutes
     validate_times(start_time, finish_time)
     compile_and_return_time_slots(Time.parse(start_time), Time.parse(finish_time))
