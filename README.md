@@ -3,12 +3,12 @@
 
 ### Overview
 
-This was a take-home interview project from a company and was **timboxed to 4 hours**.
-I have since extended it a bit. 
+This was a take-home interview project for a company. It was **timboxed to 4 hours**.
+I have since extended it. 
 
 * **Ask:**
 
-     _"Prototype a web application for scheduling an appointment"_
+     * _"Prototype a web application for scheduling an appointment"_
 
 * **Input:**
 
@@ -42,13 +42,18 @@ I have since extended it a bit.
 ### Run RSpec's
 
 * `bundle exec rspec`
+* `bundle exec rspec -f d --tag ~skip` (to skip pending tests)
+
+### Run Rubcop
+
+* `bundle exec rubocop`
 
 ### Run App
 
 * `bundle exec rails s`
 * `http://localhost:3000/`
 
-### Screenshots
+### App Screenshots
 
 * **Mobile Ready (Responsive)**
 
