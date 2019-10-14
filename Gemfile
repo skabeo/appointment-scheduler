@@ -13,7 +13,7 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'rubocop', '~> 0.62.0', require: false
+  gem 'rubocop', '= 0.74', require: false
   gem 'db-query-matchers'
   gem 'rspec-rails', '~> 3.8'
   gem 'rspec_junit_formatter'
