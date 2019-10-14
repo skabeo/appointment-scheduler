@@ -33,7 +33,45 @@ I have since extended it.
      
      * _Pick your stack. Choose any libraries that help you produce the highest quality work in the time available._
     
-### Setup
+
+### Stack
+
+* [Ruby 2.6.3](https://github.com/ChrisDrit/appointment-scheduler/blob/master/Gemfile#L6) (Upgraded from [Ruby 2.5.0](https://github.com/ChrisDrit/appointment-scheduler/pull/8))
+* [Rails 6.0.0](https://github.com/ChrisDrit/appointment-scheduler/blob/master/Gemfile#L9) (Upgraded from [Rails 5.2.1](https://github.com/ChrisDrit/appointment-scheduler/pull/9))
+* [Bootstrap](https://github.com/ChrisDrit/appointment-scheduler/blob/master/app/views/layouts/application.html.erb#L10) for Responsive layouts (mobile first!)
+
+### Heroku
+
+* [Rails Appointment Scheduler](https://rails-appointment-scheduler.herokuapp.com/)
+* This is on a free `Hobby` tier so your millage may very.
+
+### Pull Requests
+
+I've setup this up, and am developing as I would in a normal Dev environment with other engineers. 
+
+This is a public repo (open source) so feel free to push a new branch and create
+a Pull Request for me with any questions!
+
+* I have been pushing branches and creating [PR's on Github](https://github.com/ChrisDrit/appointment-scheduler/pulls?q=is%3Apr+is%3Aclosed) (ready for code review):
+
+    ![alt text](./public/list-of-pull-requests.png "Pull Request List")
+
+* I have added a couple helpful integrations - CodeClime (Rubocop) and CircleCI (Rspec's):
+
+    ![alt text](./public/pull-request-checks.png "Pull Request Integrations")
+
+* Making use of inline Todo comments while working through the feature to show progress:
+
+    ![alt text](./public/pull-request-comments.png "Pull Request Comments")
+
+
+* Rebasing my git commits (`git rebase -i origin/master`) for better clairity in the Git logs:
+
+    ![alt text](./public/git-rebase-squash-commits.png "Git Rebase")
+
+* All of the above is meant to demonstrate basic skillsets (beyond just coding) needed in a professional environment...
+
+### Local Setup
 
 * `bundle install`
 * `bundle exec rails db:setup`
@@ -43,12 +81,15 @@ I have since extended it.
 
 * `bundle exec rspec`
 * `bundle exec rspec -f d --tag ~skip` (to skip pending tests)
+     
+![alt text](./public/local-rspec-output.png "Pull Request Comments")
+
 
 ### Run Rubcop
 
 * `bundle exec rubocop`
 
-### Run App
+### Run App Locally
 
 * `bundle exec rails s`
 * `http://localhost:3000/`
