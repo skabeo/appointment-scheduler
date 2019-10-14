@@ -47,7 +47,7 @@ class Importer
                                                       start: start_time, end: finish_time)
 
           # Times based upon time arguments passed
-          slots_array = Slot.new.generate_time_slots(start_time, finish_time)
+          slots_array = Slot.new.generate_time_slots(start_time: start_time, finish_time: finish_time)
 
           # Create all slots in DB
           slots_array.map { |slot| Slot.create!(availability: availability, start: slot) }
