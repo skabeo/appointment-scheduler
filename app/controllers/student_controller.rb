@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 class StudentController < ApplicationController
   before_action :setup_student, :setup_time_zones, only: [:new]
 
-  def new
-  end
+  def new; end
 
   def create
     student = Student.new(name: student_params[:name], time_zone: student_params[:time_zone])
@@ -20,7 +21,7 @@ class StudentController < ApplicationController
     session[:student_id] = nil
     redirect_to root_path
   end
-  
+
   private
 
   def student_params
@@ -34,5 +35,4 @@ class StudentController < ApplicationController
   def setup_time_zones
     @time_zones = ActiveSupport::TimeZone.us_zones
   end
-
 end

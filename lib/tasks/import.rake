@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Import coaches and availabilites from CSV file
 #
@@ -9,9 +11,9 @@ namespace :import do
     task from_csv: :environment do
       num_imported = Importer.from_csv("#{Rails.root}/lib/tasks/coaches.csv")
 
-      puts "*" * 25
+      puts '*' * 25
       puts "Imported #{num_imported} CSV rows."
-      puts "*" * 25
+      puts '*' * 25
     end
   end
 end
