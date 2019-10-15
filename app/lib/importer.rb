@@ -50,7 +50,7 @@ class Importer
           slots_array = Slot.new.generate_time_slots(start_time: start_time, finish_time: finish_time)
 
           # Create all slots in DB
-          slots_array.map { |slot_start_time| Slot.create!(availability: availability, start: slot_start_time) }
+          slots_array.map { |slot_time| Slot.create!(availability: availability, start: slot_time) }
 
           counter += 1
         end
