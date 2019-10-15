@@ -69,7 +69,6 @@ a Pull Request for me with any questions!
 
     ![alt text](./public/git-rebase-squash-commits.png "Git Rebase")
 
-* All of the above is meant to demonstrate basic skillsets (beyond just coding) needed in a professional environment...
 
 ### Local Setup
 
@@ -82,7 +81,7 @@ a Pull Request for me with any questions!
 * `bundle exec rspec`
 * `bundle exec rspec -f d --tag ~skip` (to skip pending tests)
      
-![alt text](./public/local-rspec-output.png "Pull Request Comments")
+    ![alt text](./public/local-rspec-output.png "Pull Request Comments")
 
 
 ### Run Rubcop
@@ -98,12 +97,12 @@ a Pull Request for me with any questions!
 
 * **Mobile Ready (Responsive)**
 
-![alt text](./public/mobile-create-account.png "Responsive!")
+    ![alt text](./public/mobile-create-account.png "Responsive!")
 
 
 * **Schedule a coaches time**
 
-![alt text](./public/desktop-coach-time-slots.png "Responsive!")
+ ![alt text](./public/desktop-coach-time-slots.png "Responsive!")
 
 ---
 
