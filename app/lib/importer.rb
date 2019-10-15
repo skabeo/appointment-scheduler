@@ -46,11 +46,11 @@ class Importer
           availability = coach.availabilities.create!(day_of_week: day_of_week,
                                                       start: start_time, end: finish_time)
 
-          # Times based upon time arguments passed
+          # Array of generated times
           slots_array = Slot.new.generate_time_slots(start_time: start_time, finish_time: finish_time)
 
           # Create all slots in DB
-          slots_array.map { |slot| Slot.create!(availability: availability, start: slot) }
+          slots_array.map { |slot_start_time| Slot.create!(availability: availability, start: slot_start_time) }
 
           counter += 1
         end
